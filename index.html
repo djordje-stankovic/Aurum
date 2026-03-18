@@ -372,8 +372,9 @@ function goTo(idx){
   setTimeout(function(){ isAnimating = false; }, 1200);
 }
 
-// Detect if running inside iframe
-var inIframe = (window !== window.top);
+// Detect if running inside iframe ON MOBILE (disable touch/wheel hijacking)
+var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+var inIframe = (window !== window.top) && isMobile;
 
 // Wheel navigation (disabled in iframe)
 if (!inIframe) {
