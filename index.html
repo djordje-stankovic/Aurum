@@ -372,16 +372,21 @@ function goTo(idx){
   setTimeout(function(){ isAnimating = false; }, 1200);
 }
 
-// Wheel navigation
-var wheelTimeout;
-document.addEventListener('wheel', function(e){
-  e.preventDefault();
-  clearTimeout(wheelTimeout);
-  wheelTimeout = setTimeout(function(){
-    if(e.deltaY > 0) goTo(current + 1);
-    else goTo(current - 1);
-  }, 50);
-}, {passive: false});
+// Detect if running inside iframe
+var inIframe = (window !== window.top);
+
+// Wheel navigation (disabled in iframe)
+if (!inIframe) {
+  var wheelTimeout;
+  document.addEventListener('wheel', function(e){
+    e.preventDefault();
+    clearTimeout(wheelTimeout);
+    wheelTimeout = setTimeout(function(){
+      if(e.deltaY > 0) goTo(current + 1);
+      else goTo(current - 1);
+    }, 50);
+  }, {passive: false});
+}
 
 // Keyboard navigation
 document.addEventListener('keydown', function(e){
@@ -404,16 +409,18 @@ navLinks.forEach(function(link){
   });
 });
 
-// Touch swipe
-var touchStartY = 0;
-document.addEventListener('touchstart', function(e){ touchStartY = e.touches[0].clientY; }, {passive: true});
-document.addEventListener('touchend', function(e){
-  var diff = touchStartY - e.changedTouches[0].clientY;
-  if(Math.abs(diff) > 50){
-    if(diff > 0) goTo(current + 1);
-    else goTo(current - 1);
-  }
-}, {passive: true});
+// Touch swipe (disabled in iframe)
+if (!inIframe) {
+  var touchStartY = 0;
+  document.addEventListener('touchstart', function(e){ touchStartY = e.touches[0].clientY; }, {passive: true});
+  document.addEventListener('touchend', function(e){
+    var diff = touchStartY - e.changedTouches[0].clientY;
+    if(Math.abs(diff) > 50){
+      if(diff > 0) goTo(current + 1);
+      else goTo(current - 1);
+    }
+  }, {passive: true});
+}
 
 // ===== CANVAS PARTICLES ON EACH SLIDE =====
 (function(){
