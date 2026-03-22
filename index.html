@@ -132,6 +132,29 @@ a{color:inherit;text-decoration:none}
 .scroll-hint-line::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:50%;background:var(--gold);animation:hintDown 2s ease-in-out infinite}
 @keyframes hintDown{0%{top:-50%}100%{top:150%}}
 
+/* ===== CONTACT FORM ===== */
+.aurum-form{display:flex;flex-direction:column;gap:14px;opacity:0;transform:translateY(20px);transition:all .7s .5s}
+.slide.active .aurum-form{opacity:1;transform:translateY(0)}
+.aurum-form input,.aurum-form textarea{
+  width:100%;padding:14px 18px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(200,165,90,.2);border-radius:0;
+  font-family:var(--font);font-size:14px;font-weight:300;color:var(--cream);
+  outline:none;transition:border-color .3s;resize:none;
+  -webkit-appearance:none;appearance:none
+}
+.aurum-form input::placeholder,.aurum-form textarea::placeholder{color:rgba(245,240,232,.3);letter-spacing:1px}
+.aurum-form input:focus,.aurum-form textarea:focus{border-color:var(--gold)}
+.aurum-form button{
+  width:100%;padding:16px;margin-top:4px;
+  background:transparent;border:1px solid rgba(200,165,90,.4);
+  font-family:var(--font);font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--cream);cursor:pointer;transition:all .4s;position:relative;overflow:hidden
+}
+.aurum-form button::before{content:'';position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.aurum-form button:hover::before{transform:scaleX(1)}
+.aurum-form button span,.aurum-form button{position:relative;z-index:1}
+.aurum-form button:hover{color:var(--bg)}
+
 /* ===== RESPONSIVE ===== */
 @media(max-width:900px){
   .nav{padding:16px 20px}
@@ -209,10 +232,6 @@ a{color:inherit;text-decoration:none}
         <div class="slide-tag">Ekskluzivno iskustvo</div>
         <h1 class="slide-title">Gde se svetlost<br>susreće sa <em>tamom</em></h1>
         <p class="slide-desc">Prostori dizajnirani za one koji traže više od uobičajenog. Svaki trenutak, savršeno uokviren.</p>
-        <a href="#" class="slide-btn" onclick="goTo(2);return false">
-          <span>Istražite</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
       </div>
     </div>
   </div>
@@ -271,10 +290,6 @@ a{color:inherit;text-decoration:none}
         <div class="slide-tag">Filozofija</div>
         <h2 class="slide-title">Detalji čine <em>razliku</em></h2>
         <p class="slide-desc">Prirodni kamen, ručno rađeno drvo, bakar patinan vremenom. Svetlost koreografirana da prati ritam dana. Zvuk osmišljen da donese mir ili energiju — po vašoj želji.</p>
-        <a href="#" class="slide-btn" onclick="goTo(5);return false">
-          <span>Pogledajte galeriju</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
       </div>
     </div>
   </div>
@@ -315,17 +330,19 @@ a{color:inherit;text-decoration:none}
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1920&q=80" alt="">
     </div>
-    <div class="slide-overlay" style="background:radial-gradient(ellipse at center,rgba(12,10,9,.5),rgba(12,10,9,.8))"></div>
+    <div class="slide-overlay" style="background:radial-gradient(ellipse at center,rgba(12,10,9,.5),rgba(12,10,9,.85))"></div>
     <canvas class="slide-canvas" id="canvas6"></canvas>
     <div class="slide-content layout-center">
-      <div class="slide-text">
+      <div class="slide-text" style="width:100%;max-width:480px">
         <div class="slide-tag">Kontakt</div>
-        <h2 class="slide-title">Doživite <em>Aurum</em></h2>
-        <p class="slide-desc">Spremni smo da vam pokažemo prostor koji menja perspektivu.</p>
-        <a href="#" class="slide-btn">
-          <span>Zakažite posetu</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <h2 class="slide-title" style="font-size:clamp(28px,4vw,52px);margin-bottom:28px">Doživite <em>Aurum</em></h2>
+        <form class="aurum-form" onsubmit="return false">
+          <input type="text" placeholder="Ime i prezime" required>
+          <input type="email" placeholder="Email adresa" required>
+          <input type="tel" placeholder="Telefon">
+          <textarea placeholder="Vaša poruka..." rows="3"></textarea>
+          <button type="submit">Pošaljite</button>
+        </form>
       </div>
     </div>
   </div>
@@ -372,9 +389,8 @@ function goTo(idx){
   setTimeout(function(){ isAnimating = false; }, 1200);
 }
 
-// Detect if running inside iframe ON MOBILE (disable touch/wheel hijacking)
-var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-var inIframe = (window !== window.top) && isMobile;
+// Detect if running inside iframe (disable touch/wheel hijacking so parent page can scroll)
+var inIframe = (window !== window.top);
 
 // Wheel navigation (disabled in iframe)
 if (!inIframe) {
