@@ -389,11 +389,17 @@ function goTo(idx){
   setTimeout(function(){ isAnimating = false; }, 1200);
 }
 
-// Detect if running inside iframe (disable touch/wheel hijacking so parent page can scroll)
+// Detect if running inside iframe
 var inIframe = (window !== window.top);
 
-// Wheel navigation (disabled in iframe)
-if (!inIframe) {
+if (inIframe) {
+  // In iframe: forward wheel events to parent so parent page can scroll
+  document.addEventListener('wheel', function(e){
+    e.preventDefault();
+    window.parent.postMessage({ type: 'aegis-iframe-wheel', deltaY: e.deltaY }, '*');
+  }, {passive: false});
+} else {
+  // Standalone: wheel navigates between slides
   var wheelTimeout;
   document.addEventListener('wheel', function(e){
     e.preventDefault();
